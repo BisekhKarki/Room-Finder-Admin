@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Users = require("../Schema/UserModel");
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -34,4 +35,35 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = deleteUser;
+const getAllUser = async (req, res) => {
+  const user = req.user;
+
+  try {
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Unauthorized User",
+      });
+    }
+
+    const getUsers = await Users.find({}).select("-Password");
+    if (!getUsers) {
+      return res.status(400).json({
+        success: false,
+        message: "Something wrong!!!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: getUsers,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { deleteUser, getAllUser };

@@ -116,4 +116,30 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserDetails = async (req, res) => {
+  const user = req.user;
+
+  try {
+    const getUser = await UserSchema.findById(user.id)
+      .select("-password")
+      .select("-__v");
+    if (!getUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: getUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserDetails };

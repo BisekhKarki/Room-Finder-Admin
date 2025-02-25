@@ -18,7 +18,7 @@ const Page = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${base_url}/api/admin/login`,
+        `${base_url}/login`,
         {
           email,
           password,
