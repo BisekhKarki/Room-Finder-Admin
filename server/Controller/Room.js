@@ -1,43 +1,29 @@
 const mongoose = require("mongoose");
-// Room schema
-const room = new mongoose.Schema({}, { strict: false });
-// Approval schema
-const approvals = new mongoose.Schema({}, { strict: false });
+const ApproveRoomSchema = require("../Schema/ApproveRooms");
+const RoomSchema = require("../Schema/RoomSchema");
 
 // Approving the room if payment is done and move the approved room
 // to the rooms table
 const approveRoom = async (req, res) => {
   const { id } = req.params;
-  try {
-    const findRoom = mongoose.model("rooms", room);
-    const approval = mongoose.model("approvals", approvals);
 
-    const findRoomById = await approval.findOne({ _id: id });
+  try {
+    const findRoomById = await ApproveRoomSchema.findById(id);
     if (!findRoomById) {
       return res.status(404).json({
         success: false,
-        message: "Room not found",
+        message: "Room not found approval list",
       });
     }
 
-    const updatedApproval = await approval.findByIdAndUpdate(
-      id,
-      {
-        payment: true,
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!updatedApproval) {
+    if (!findRoomById.payment) {
       return res.status(404).json({
         success: false,
-        message: "Failed to approve room",
+        message: "Payment for room has not been made",
       });
     }
 
-    const checkRooms = await findRoom.findById(id);
+    const checkRooms = await RoomSchema.findById(id);
     if (checkRooms) {
       return res.status(400).json({
         success: false,
@@ -45,20 +31,13 @@ const approveRoom = async (req, res) => {
       });
     }
 
-    const newRoom = new findRoom({
-      _id: id,
-      Room: updatedApproval.Room,
-      payment: updatedApproval.payment,
+    findRoomById.isVerified = true;
+    await findRoomById.save();
+
+    const newRoom = new RoomSchema({
+      ...findRoomById.toObject(),
     });
     await newRoom.save();
-
-    const deleteRoom = await approval.findByIdAndDelete(id);
-    if (!deleteRoom) {
-      return res.status(200).json({
-        success: true,
-        message: "Room approval unsuccessfull",
-      });
-    }
 
     return res.status(200).json({
       success: true,
@@ -67,47 +46,93 @@ const approveRoom = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error,
+      message: error.message,
     });
   }
 };
 
-// For deletion of the rooms
-const deleteRoom = async (req, res) => {
-  const { id } = req.params;
+const getAllPendingRooms = async (req, res) => {
   try {
-    const room = new mongoose.Schema({});
-    const findRoom = mongoose.model("rooms", room);
-
-    const findRooms = await findRoom.findById(id);
-    if (!findRooms) {
-      return res.status(404).json({
+    const getAllRooms = await ApproveRoomSchema.find({});
+    if (!getAllRooms) {
+      return res.status(400).json({
         success: false,
-        message: "Room not found",
-      });
-    }
-
-    const deleteRoomById = await findRoom.findByIdAndDelete(id);
-    if (!deleteRoomById) {
-      return res.status(404).json({
-        success: false,
-        message: "Failed to delete room",
+        message: "No room for approval",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Room deleted successfully",
+      message: getAllRooms,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error,
+      message: error.message,
     });
   }
 };
 
+const getAllRooms = async (req, res) => {
+  try {
+    const getAllRooms = await RoomSchema.find({});
+    if (!getAllRooms) {
+      return res.status(400).json({
+        success: false,
+        message: "No rooms found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: getAllRooms,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// // For deletion of the rooms
+// const deleteRoom = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const room = new mongoose.Schema({});
+//     const findRoom = mongoose.model("rooms", room);
+
+//     const findRooms = await findRoom.findById(id);
+//     if (!findRooms) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Room not found",
+//       });
+//     }
+
+//     const deleteRoomById = await findRoom.findByIdAndDelete(id);
+//     if (!deleteRoomById) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Failed to delete room",
+//       });
+//     }
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Room deleted successfully",
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error,
+//     });
+//   }
+// };
+
 module.exports = {
   approveRoom,
-  deleteRoom,
+  getAllPendingRooms,
+  getAllRooms,
+  // deleteRoom,
 };

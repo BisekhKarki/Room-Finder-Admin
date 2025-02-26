@@ -69,7 +69,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen gap-20">
+    <div className="flex h-screen  gap-10">
       <Sidebar details={user} />
       {index === 1 && <DashboardHome />}
       {index === 2 && <User />}
