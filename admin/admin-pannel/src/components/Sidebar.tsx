@@ -18,11 +18,11 @@ interface Props {
 }
 
 const Sidebar = ({ details }: Props) => {
-  const { index, setIndex } = useAppContext();
+  const { setIndex } = useAppContext();
 
   return (
     <aside className="">
-      <div className="bg-black h-screen text-white px-20 py-5 ">
+      <div className="bg-gray-200 text-black h-screen border border-r-gray-400 px-20 py-5 ">
         <div>
           <h1 className="text-2xl font-bold">Admin Pannel</h1>
           <div className="flex flex-col justify-center items-center gap-2 py-7">
@@ -36,8 +36,9 @@ const Sidebar = ({ details }: Props) => {
         </button> */}
         </div>
 
-        <div className="flex flex-col gap-7 mt-10 ">
+        <div className="flex flex-col gap-5">
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(1));
@@ -47,6 +48,7 @@ const Sidebar = ({ details }: Props) => {
             Dashboard
           </button>
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(2));
@@ -56,6 +58,7 @@ const Sidebar = ({ details }: Props) => {
             Users
           </button>
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(3));
@@ -65,6 +68,7 @@ const Sidebar = ({ details }: Props) => {
             Tenants
           </button>
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(4));
@@ -74,6 +78,7 @@ const Sidebar = ({ details }: Props) => {
             Landlords
           </button>
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(5));
@@ -83,6 +88,7 @@ const Sidebar = ({ details }: Props) => {
             Verified Rooms
           </button>
           <button
+            className="bg-white text-black rounded-md py-3 shadow-xl"
             type="button"
             onClick={() => {
               localStorage.setItem("Index", JSON.stringify(6));

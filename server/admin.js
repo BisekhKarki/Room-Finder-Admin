@@ -10,6 +10,7 @@ const landlordRouter = require("./Routes/landLordRouter");
 const tenantsRouter = require("./Routes/TenantsRouter");
 const roomRouter = require("./Routes/RoomRoute");
 const adminRouter = require("./Routes/AdminRouter");
+const dashboardRouter = require("./Routes/DashboardRoutes");
 
 app.use(express.json());
 // For cross origin to connect frontend and the backend
@@ -30,6 +31,9 @@ app.use("/api/admin", roomRouter);
 
 // For admin user creation fetching and deletion
 app.use("/api/admin", adminRouter);
+
+// For total users, pending rooms and approved rooms
+app.use("/api/admin", dashboardRouter);
 
 // Server
 app.listen(PORT, () => {
