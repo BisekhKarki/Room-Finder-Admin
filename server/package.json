@@ -5,7 +5,9 @@
   "main": "admin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon admin.js"
+    "build": "npm install",
+    "start": "npx nodemon admin.js",
+    "dev": "nodemon admin.js"
   },
   "author": "Bisekh Karki",
   "license": "ISC",
@@ -16,7 +18,9 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.12.0",
-    "mongoose": "^8.9.2",
+    "mongoose": "^8.9.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.9"
   }
 }
