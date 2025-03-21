@@ -2,7 +2,6 @@
 
 import { useAppContext } from "@/Context";
 import { base_url } from "@/lib/Constants";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -12,7 +11,7 @@ interface Total {
   totalUsers: number;
 }
 
-const DashboardHome = () => {
+const Page = () => {
   const [values, setValues] = useState<Total | null>(null);
   const { token } = useAppContext();
   const getTotals = async () => {
@@ -28,9 +27,9 @@ const DashboardHome = () => {
       if (response.status === 200) {
         setValues(data.message);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error) {
-        toast.error(error);
+        toast.error(String(error));
       }
     }
   };
@@ -39,25 +38,32 @@ const DashboardHome = () => {
     if (token) {
       getTotals();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
-
-  console.log(values);
 
   return (
     <div className="mt-5 py-5 px-5 w-2/3">
       <h1 className="font-bold text-2xl text-black">
         Welcome To Admin Dashboard
       </h1>
-      <div className="mt-10 flex gap-10">
+      <div className="mt-10 flex gap-10 flex-wrap">
         <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-xl text-center py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
           <p>Total Users</p>
           <p>{values && values.totalUsers}</p>
         </div>
         <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-xl text-center py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
-          <p>Total Rooms</p>
+          <p>Landlords</p>
           <p>{values && values.totalRooms}</p>
         </div>
-        <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-xl text-center text-xl py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
+        <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-center text-xl py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
+          <p>Tenants</p>
+          <p>{values && values.totaApprovalLeft}</p>
+        </div>
+        <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-center text-xl py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
+          <p>Total Rooms</p>
+          <p>{values && values.totaApprovalLeft}</p>
+        </div>
+        <div className="border border-gray-300 rounded-lg shadow-lg font-bold text-center text-xl py-10 px-16 cursor-pointer hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 ease-out">
           <p>Pending Rooms</p>
           <p>{values && values.totaApprovalLeft}</p>
         </div>
@@ -66,4 +72,4 @@ const DashboardHome = () => {
   );
 };
 
-export default DashboardHome;
+export default Page;

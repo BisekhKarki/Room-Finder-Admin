@@ -12,9 +12,19 @@ const roomRouter = require("./Routes/RoomRoute");
 const adminRouter = require("./Routes/AdminRouter");
 const dashboardRouter = require("./Routes/DashboardRoutes");
 
+const frontendUrl =
+  process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000";
+
 app.use(express.json());
 // For cross origin to connect frontend and the backend
-app.use(cors());
+app.use(
+  cors({
+    origin: frontendUrl,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Database connection
 database();

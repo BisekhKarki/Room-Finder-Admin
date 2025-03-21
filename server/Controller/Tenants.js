@@ -5,17 +5,15 @@ const deleteTenants = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const landLordSchema = new mongoose.Schema({});
-    const landlord = mongoose.model("landlords", landLordSchema);
-    const findLandLord = await landlord.findById(id);
-    if (!findLandLord) {
+    const findTenants = await Users.findById(id);
+    if (!findTenants) {
       return res.status(404).json({
         success: false,
         message: "No user found",
       });
     }
-    const deleteLandLord = await landlord.findByIdAndDelete(id);
-    if (!deleteLandLord) {
+    const deletTenants = await Users.findByIdAndDelete(id);
+    if (!deletTenants) {
       return res.status(400).json({
         success: false,
         message: "Failed to delete the user",
@@ -68,6 +66,6 @@ const getAllTenants = async (req, res) => {
 };
 
 module.exports = {
-  //   deleteTenants,
+  deleteTenants,
   getAllTenants,
 };

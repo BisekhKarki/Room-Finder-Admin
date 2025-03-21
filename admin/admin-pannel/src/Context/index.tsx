@@ -5,8 +5,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 interface AppContextType {
   token: string;
   setToken: (state: string) => void;
-  index: number;
-  setIndex: (index: number) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
 }
@@ -15,16 +13,8 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppWrapper({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string>("");
-  const [index, setIndex] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const getIndex = localStorage.getItem("Index");
-    if (getIndex) {
-      const parsedIndex = JSON.parse(getIndex);
-      setIndex(parsedIndex);
-    }
-  }, [index]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getToken = localStorage.getItem("Token");
@@ -33,7 +23,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
     }
   }, [token]);
 
-  const values = { token, setToken, index, setIndex, loading, setLoading };
+  const values = { token, setToken, loading, setLoading };
 
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
 }

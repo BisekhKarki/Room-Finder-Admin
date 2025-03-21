@@ -2,7 +2,7 @@
 import { useAppContext } from "@/Context";
 import { base_url } from "@/lib/Constants";
 import axios from "axios";
-import { PencilIcon, Trash } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,20 +16,55 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const PendingRooms = () => {
-  const [rooms, setRooms] = useState<Array<any> | null>([]);
+interface Property {
+  basic: {
+    name: string;
+    type: string;
+    description: string;
+    price: string;
+  };
+  contact: {
+    username: string;
+    email: string;
+    phone: string;
+  };
+  features: {
+    parking: string;
+    balcony: string;
+    category: string;
+    direction: string;
+    floor: string;
+  };
+  images: string[];
+  isVerified: boolean;
+  landlordId: string;
+  location: {
+    street: string;
+    zip: string;
+    city: string;
+    landmark: string;
+    region: string;
+  };
+  payment: boolean;
+  __v: number;
+  _id: string;
+}
+
+const Page = () => {
+  const [rooms, setRooms] = useState<Array<Property> | null>([]);
   const { token, loading, setLoading } = useAppContext();
 
   useEffect(() => {
     if (token) {
       fetchDetails();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const fetchDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${base_url}/room/all/approve`, {
+      const response = await axios.get(`${base_url}/room`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -43,45 +78,6 @@ const PendingRooms = () => {
         return;
       }
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.message || " Internal Server Error");
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Internal Server Error");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const ApproveRooms = async (id: string) => {
-    if (!token) {
-      return toast.error("No Token provided");
-    }
-    setLoading(true);
-    try {
-      const response = await axios.patch(
-        `${base_url}/room/verify/${id}`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = response.data;
-      console.log(data);
-      if (data && response.status === 200) {
-        setLoading(false);
-        toast.success(data.message);
-        return;
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.message || " Internal Server Error");
       } else if (error instanceof Error) {
@@ -157,32 +153,12 @@ const PendingRooms = () => {
                           {r.isVerified ? "Yes" : "No"}
                         </TableCell>
                         <TableCell className="flex flex-col gap-2">
-                          {r.isVerified && r.payment ? (
-                            <button
-                              className="bg-red-600 px-2 py-1 text-white rounded-md text-base  shadow-xl"
-                              type="button"
-                            >
-                              Delete
-                            </button>
-                          ) : (
-                            <div>
-                              <button
-                                className={`bg-blue-600 px-2 py-1 text-white rounded-md text-base mb-2 shadow-xl ${
-                                  loading ? "animate-spin" : ""
-                                }`}
-                                onClick={() => ApproveRooms(r._id)}
-                                type="button"
-                              >
-                                {loading ? "O" : "Approve"}
-                              </button>
-                              <button
-                                className="bg-red-600 px-2 py-1 text-white rounded-md text-base  shadow-xl"
-                                type="button"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          )}
+                          <button
+                            className="bg-red-600 px-2 py-1 text-white rounded-md text-base  shadow-xl"
+                            type="button"
+                          >
+                            Delete
+                          </button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -203,4 +179,4 @@ const PendingRooms = () => {
   );
 };
 
-export default PendingRooms;
+export default Page;

@@ -4,9 +4,7 @@ const Users = require("../Schema/UserModel");
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const userSchema = new mongoose.Schema({});
-    const User = mongoose.model("User", userSchema);
-    const findUser = await User.findById(id);
+    const findUser = await Users.findById(id);
     if (!findUser) {
       return res.status(404).json({
         success: false,
@@ -14,7 +12,7 @@ const deleteUser = async (req, res) => {
       });
     }
 
-    const deleteUser = await User.findByIdAndDelete(id);
+    const deleteUser = await Users.findByIdAndDelete(id);
 
     if (!deleteUser) {
       return res.status(400).json({

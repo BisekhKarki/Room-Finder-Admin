@@ -5,7 +5,7 @@ const userSchema = require("../Schema/UserModel");
 const getTotals = async (req, res) => {
   try {
     const users = await userSchema.find({});
-    const pendingRooms = await approveRoom.find({});
+    const pendingRooms = await approveRoom.find({ payment: false });
     const approvedRooms = await roomSchema.find({});
 
     const totalUsers = users.length;
