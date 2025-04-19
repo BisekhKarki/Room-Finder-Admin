@@ -2,12 +2,24 @@ const mongoose = require("mongoose");
 const ApproveRoomSchema = require("../Schema/ApproveRooms");
 const RoomSchema = require("../Schema/RoomSchema");
 const { getAllLandlord } = require("./Landlord");
+const nodemailer = require("nodemailer");
+const template = require("../EmailTemplate");
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Approving the room if payment is done and move the approved room
 // to the rooms table
 const approveRoom = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+
   try {
     const findRoomById = await ApproveRoomSchema.findById(id);
 
@@ -39,8 +51,18 @@ const approveRoom = async (req, res) => {
 
     const newRoom = new RoomSchema({
       ...findRoomById.toObject(),
+      show: true,
     });
     await newRoom.save();
+
+    const templateGet = template(newRoom.contact.username);
+
+    await transporter.sendMail({
+      from: "RoomFinder@gmail.com",
+      to: newRoom.contact.email,
+      subject: "Room Approval Mail",
+      html: templateGet,
+    });
 
     return res.status(200).json({
       success: true,
@@ -56,7 +78,7 @@ const approveRoom = async (req, res) => {
 
 const getAllPendingRooms = async (req, res) => {
   try {
-    const getAllRooms = await ApproveRoomSchema.find({ payment: false });
+    const getAllRooms = await ApproveRoomSchema.find({ isVerified: false });
     if (!getAllRooms) {
       return res.status(400).json({
         success: false,

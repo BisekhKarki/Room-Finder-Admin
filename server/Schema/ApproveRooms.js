@@ -77,7 +77,23 @@ const forApproval = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  reviews: [
+    {
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      comment: {
+        type: String,
+      },
+      rating: { type: Number, min: 0, max: 5 },
+    },
+  ],
   isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  show: {
     type: Boolean,
     default: false,
   },

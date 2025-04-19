@@ -19,9 +19,10 @@ app.use(express.json());
 // For cross origin to connect frontend and the backend
 app.use(
   cors({
+    // origin: frontendUrl,
     origin: frontendUrl,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );

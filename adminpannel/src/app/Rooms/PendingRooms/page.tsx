@@ -95,6 +95,7 @@ const Page = () => {
       return toast.error("No Token provided");
     }
     setLoading(true);
+    console.log(id);
     try {
       const response = await axios.patch(
         `${base_url}/room/verify/${id}`,

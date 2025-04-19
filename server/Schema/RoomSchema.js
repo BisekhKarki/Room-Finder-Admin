@@ -83,6 +83,21 @@ const rooms = new mongoose.Schema({
   payment: {
     type: Boolean,
   },
+  show: {
+    type: Boolean,
+  },
+  reviews: [
+    {
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      comment: {
+        type: String,
+      },
+      rating: { type: Number, min: 0, max: 5 },
+    },
+  ],
 });
 
 const roomSchema = mongoose.models.rooms || mongoose.model("Rooms", rooms);
