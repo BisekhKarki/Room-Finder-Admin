@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 
 const Page = () => {
   const [email, setEmail] = useState<string>("");
@@ -105,17 +105,17 @@ const Page = () => {
           >
             Submit
           </button>
-          <button
+          {/* <button
             type="button"
             className=" flex items-center bg-gray-50 hover:bg-gray-100 justify-center gap-2 border border-gray-300 hover:border-gray-400  w-full py-2 rounded-md shadow-md transition-all duration-300 ease-in-out"
           >
             <FcGoogle />
             Login with Google
-          </button>
+          </button> */}
         </form>
-        <p className="text-center mt-5 text-blue-500 underline">
+        {/* <p className="text-center mt-5 text-blue-500 underline">
           Forgot Password?
-        </p>
+        </p> */}
       </div>
     </div>
   );
