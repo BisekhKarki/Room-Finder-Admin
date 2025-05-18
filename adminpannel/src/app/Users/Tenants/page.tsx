@@ -2,7 +2,8 @@
 import { useAppContext } from "@/Context";
 import { base_url } from "@/lib/Constants";
 import axios from "axios";
-import { PencilIcon, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -98,12 +99,7 @@ const Page = () => {
   return (
     <div>
       <div className="">
-        <button
-          type="button"
-          className="bg-black text-white px-5 py-2 mt-2 shadow-lg rounded-md border border-white"
-        >
-          Add New Tenant
-        </button>
+        <h1 className="font-bold text-6xl">Tenants</h1>
       </div>
       <div className="flex justify-center items-center py-5">
         <div className="w-full ">
@@ -136,7 +132,6 @@ const Page = () => {
                           <td className="py-4 px-6">{u.Phone}</td>
                           <td className="py-4 px-6">{u.UserType}</td>
                           <td className="flex items-center justify-center py-5 gap-5">
-                            <PencilIcon className="cursor-pointer" />
                             <Trash
                               className="text-red-600 cursor-pointer"
                               onClick={() => deleteUser(u._id)}

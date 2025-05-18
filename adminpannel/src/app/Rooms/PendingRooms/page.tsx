@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 
 interface Property {
   basic: {
@@ -52,6 +53,7 @@ interface Property {
 const Page = () => {
   const [rooms, setRooms] = useState<Array<Property> | null>([]);
   const { token, loading, setLoading } = useAppContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (token) {
@@ -72,6 +74,7 @@ const Page = () => {
       });
 
       const data = response.data;
+      console.log(data);
       if (data && response.status === 200) {
         setRooms(data.message);
         setLoading(false);
@@ -113,6 +116,8 @@ const Page = () => {
       if (data && response.status === 200) {
         setLoading(false);
         toast.success(data.message);
+        router.push("/Rooms");
+
         return;
       } else {
         toast.error(data.message);
