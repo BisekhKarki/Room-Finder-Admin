@@ -75,11 +75,21 @@
 
 "use client";
 
+import RoomPayment from "@/components/RoomPayment";
+import UserPaymentTable from "@/components/UserPaymentTable";
 import { useAppContext } from "@/Context";
 import { base_url } from "@/lib/Constants";
 import { Bed, Clock, Home, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Users {
   Address: string;
@@ -100,8 +110,9 @@ const Page = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const [tenant, setTenant] = useState<number>(0);
   const [landlord, setLandlord] = useState<number>(0);
+  const [paymentIndex, setPaymentIndex] = useState(0);
 
-  const { token } = useAppContext();
+  const { token, checkToken } = useAppContext();
   const getTotals = async () => {
     try {
       const response = await fetch(`${base_url}/get/Total`, {
@@ -129,6 +140,7 @@ const Page = () => {
   useEffect(() => {
     if (token) {
       getTotals();
+      checkToken();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,103 +155,135 @@ const Page = () => {
       setTenant(tenantUser);
       setLandlord(landlordUsers);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="mt-2 text-gray-600">Welcome to your management portal</p>
+    <>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="mt-2 text-gray-600">
+            Welcome to your management portal
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Users</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {/* {values?.totalUsers ?? (
+                  <span className="animate-pulse">...</span>
+                )} */}
+                  <span className="animate-pulse">{totalUser}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-green-100 rounded-full">
+                <Home className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Landlords</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {/* {values?.totalRooms ?? (
+                  <span className="animate-pulse">...</span>
+                )} */}
+                  <span className="animate-pulse">{landlord}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-purple-100 rounded-full">
+                <Users className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Tenants</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {/* {values?.totaApprovalLeft ?? (
+                  <span className="animate-pulse">...</span>
+                )} */}
+                  <span className="animate-pulse">{tenant}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-orange-100 rounded-full">
+                <Bed className="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Rooms</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {/* {values?.totaApprovalLeft ?? (
+                  <span className="animate-pulse">...</span>
+                )} */}
+                  <span className="animate-pulse">{totalRooms}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-red-100 rounded-full">
+                <Clock className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Pending Rooms</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {/* {values?.totaApprovalLeft ?? (
+                  <span className="animate-pulse">...</span>
+                )} */}
+                  <span className="animate-pulse">{totalPendingRooms}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full mt-10">
+          <div>
+            <div className="flex items-center gap-10">
+              <p className="font-bold text-xl">Choose a payment Type</p>
+              <div className="flex flex-row gap-10">
+                <Select
+                  onValueChange={(value) =>
+                    setPaymentIndex(value === "User" ? 0 : 1)
+                  }
+                >
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Choose a user" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="User">User Payment History</SelectItem>
+                    <SelectItem value="Landlord">
+                      Landlord Payment History
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3">
+            {paymentIndex === 0 && <UserPaymentTable />}
+            {paymentIndex === 1 && <RoomPayment />}
+          </div>
+        </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-full">
-              <Users className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {/* {values?.totalUsers ?? (
-                  <span className="animate-pulse">...</span>
-                )} */}
-                <span className="animate-pulse">{totalUser}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-100 rounded-full">
-              <Home className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Landlords</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {/* {values?.totalRooms ?? (
-                  <span className="animate-pulse">...</span>
-                )} */}
-                <span className="animate-pulse">{landlord}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-100 rounded-full">
-              <Users className="w-6 h-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Tenants</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {/* {values?.totaApprovalLeft ?? (
-                  <span className="animate-pulse">...</span>
-                )} */}
-                <span className="animate-pulse">{tenant}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-orange-100 rounded-full">
-              <Bed className="w-6 h-6 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Total Rooms</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {/* {values?.totaApprovalLeft ?? (
-                  <span className="animate-pulse">...</span>
-                )} */}
-                <span className="animate-pulse">{totalRooms}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-red-100 rounded-full">
-              <Clock className="w-6 h-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Pending Rooms</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {/* {values?.totaApprovalLeft ?? (
-                  <span className="animate-pulse">...</span>
-                )} */}
-                <span className="animate-pulse">{totalPendingRooms}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -11,6 +11,7 @@ const tenantsRouter = require("./Routes/TenantsRouter");
 const roomRouter = require("./Routes/RoomRoute");
 const adminRouter = require("./Routes/AdminRouter");
 const dashboardRouter = require("./Routes/DashboardRoutes");
+const verifyToken = require("./Middleware/VerifyToken");
 
 const frontendUrl =
   process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000";
@@ -45,6 +46,8 @@ app.use("/api/admin", adminRouter);
 
 // For total users, pending rooms and approved rooms
 app.use("/api/admin", dashboardRouter);
+
+app.get("/api/admin/verify", verifyToken);
 
 // Server
 app.listen(PORT, () => {

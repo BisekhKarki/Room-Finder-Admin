@@ -36,7 +36,7 @@ const Page = () => {
         localStorage.setItem("Token", data.Token);
         router.push("/");
         return;
-      } else {
+      } else if (!data.success) {
         toast.error(data.message);
       }
     } catch (error: unknown) {
@@ -68,7 +68,7 @@ const Page = () => {
           <div className="flex flex-col space-y-2 relative">
             <label>Enter you email</label>
             <input
-              type="password"
+              type={showOrHide ? "text" : "password"}
               placeholder="********"
               className="border border-gray-500 rounded px-2 py-2"
               value={password}

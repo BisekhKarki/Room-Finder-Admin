@@ -74,8 +74,8 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="bg-white">
-      <div className=" text-gray-700 h-screen border px-20 py-5 ">
+    <aside className="bg-white ">
+      <div className=" text-gray-700 h-full border px-20 py-5 ">
         <div>
           <h1 className="text-2xl text-center font-bold">Admin Pannel</h1>
           <div className="flex flex-col justify-center items-center gap-2 py-7">

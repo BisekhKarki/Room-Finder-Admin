@@ -21,11 +21,12 @@ interface User {
 
 const Page = () => {
   const [user, setUser] = useState<Array<User> | []>([]);
-  const { token, loading, setLoading } = useAppContext();
+  const { token, loading, setLoading, checkToken } = useAppContext();
 
   useEffect(() => {
     if (token) {
       fetchDetails();
+      checkToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
