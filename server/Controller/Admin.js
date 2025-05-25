@@ -8,15 +8,14 @@ const landlordPayment = require("../Schema/LandlordPaymentSchema");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
+  host: "smtp.gmail.com",
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: false, // true for port 465, false for other ports
   auth: {
-    user: "maddison53@ethereal.email",
-    pass: "jn7jnAPss4f63QBp6D",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
-
 const getToken = async (id, email) => {
   return jwt.sign(
     {
@@ -272,6 +271,113 @@ const fetchLanlordPayment = async (req, res) => {
   }
 };
 
+const generateCode = () => {
+  const newCode = Math.floor(1000 + Math.random() * 9000);
+  return newCode;
+};
+
+let generatedCode = generateCode();
+let userEmail = "";
+
+const sendCodeToEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    if (!email) {
+      return res.status(400).json({
+        success: true,
+        message: "Enter a email",
+      });
+    }
+
+    const getCode = generatedCode;
+
+    userEmail = email;
+
+    await transporter.sendMail({
+      from: "Room Finder 🏠<roomfinder@gmail.com>",
+      to: email,
+      subject: "Password reset Code",
+      html: `
+      Your email verification code is: ${getCode}
+      `,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Code sent to your email",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const verifyCode = async (req, res) => {
+  try {
+    const { code } = req.body;
+    console.log(code);
+    console.log(generatedCode);
+    console.log(userEmail);
+    if (parseInt(code) === generatedCode) {
+      return res.status(200).json({
+        success: true,
+        message: "Code verified successfully",
+        email: userEmail,
+      });
+    }
+    return res.status(400).json({
+      success: false,
+      message: "Code not verified",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    console.log("Change", userEmail);
+    const user = await UserSchema.findOne({
+      email: userEmail,
+    });
+    console.log(user);
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be minimum 8 characters long",
+      });
+    }
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "No user found",
+      });
+    }
+
+    const hashedPassowrd = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassowrd;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changes successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -279,4 +385,7 @@ module.exports = {
   changePassword,
   fetchUserPayment,
   fetchLanlordPayment,
+  sendCodeToEmail,
+  verifyCode,
+  changeUserPassword,
 };

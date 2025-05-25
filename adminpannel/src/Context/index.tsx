@@ -13,6 +13,8 @@ interface AppContextType {
   setLoading: (loading: boolean) => void;
   checkToken: () => void;
   verified: boolean;
+  userEmail: string;
+  setUserEmail: (value: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -23,6 +25,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [verified, setVerified] = useState<boolean>(false);
+  const [userEmail, setUserEmail] = useState<string>("");
 
   const checkToken = async () => {
     try {
@@ -58,7 +61,16 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
     }
   }, [token]);
 
-  const values = { token, setToken, loading, setLoading, checkToken, verified };
+  const values = {
+    token,
+    setToken,
+    loading,
+    setLoading,
+    checkToken,
+    verified,
+    userEmail,
+    setUserEmail,
+  };
 
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
 }

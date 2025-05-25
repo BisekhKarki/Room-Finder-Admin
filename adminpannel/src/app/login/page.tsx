@@ -90,7 +90,7 @@ const Page = () => {
               )}
             </div>
           </div>
-          <p className="text-center">
+          {/* <p className="text-center">
             Dont have an account?
             <span
               className="text-blue-500 underline cursor-pointer"
@@ -98,6 +98,12 @@ const Page = () => {
             >
               Register
             </span>
+          </p> */}
+          <p
+            className="text-blue-500 underline cursor-pointer text-center"
+            onClick={() => router.push("/forgetPassword")}
+          >
+            Forgot Passwords? Click
           </p>
           <button
             type="submit"
