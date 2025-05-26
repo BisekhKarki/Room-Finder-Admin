@@ -90,7 +90,7 @@ const forApproval = new mongoose.Schema({
   },
   reviews: [
     {
-      id: {
+      user: {
         type: Schema.Types.ObjectId,
         ref: "User",
       },
